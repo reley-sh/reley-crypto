@@ -1,0 +1,32 @@
+{
+  "name": "@reley/crypto",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "description": "E2E encryption primitives for Reley (X25519, HKDF, XChaCha20-Poly1305, Double Ratchet)",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "src", "LICENSE"],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "libsodium-wrappers-sumo": "^0.7.15"
+  },
+  "devDependencies": {
+    "@types/libsodium-wrappers-sumo": "^0.7.8",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  }
+}
