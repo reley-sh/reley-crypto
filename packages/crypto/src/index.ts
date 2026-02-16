@@ -40,6 +40,7 @@ export {
 } from './qr-payload.js';
 
 export {
+  zeroize,
   computeFingerprint,
   toBase64Url,
   fromBase64Url,

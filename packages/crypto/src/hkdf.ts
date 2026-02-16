@@ -1,4 +1,5 @@
 import { ensureSodium } from './keys.js';
+import { zeroize } from './utils.js';
 
 const HKDF_HASH_LEN = 32; // SHA-256
 
@@ -45,10 +46,11 @@ export async function deriveSessionKeys(
   const prk = await hkdfExtract(salt, sharedSecret);
   // 64 bytes: first 32 = send key, next 32 = recv key
   const okm = await hkdfExpand(prk, infoBytes, 64);
-  return {
-    sendKey: okm.slice(0, 32),
-    recvKey: okm.slice(32, 64),
-  };
+  const sendKey = okm.slice(0, 32);
+  const recvKey = okm.slice(32, 64);
+  // Zeroize intermediate key material
+  await zeroize(prk, okm);
+  return { sendKey, recvKey };
 }
 
 /**
@@ -62,8 +64,8 @@ export async function deriveChainKey(
   const msgKeyInput = new TextEncoder().encode(info + '-msg');
   const chainKeyInput = new TextEncoder().encode(info + '-chain');
 
-  const messageKey = s.crypto_auth_hmacsha256(msgKeyInput, chainKey);
-  const nextChainKey = s.crypto_auth_hmacsha256(chainKeyInput, chainKey);
+  const messageKey = new Uint8Array(s.crypto_auth_hmacsha256(msgKeyInput, chainKey));
+  const nextChainKey = new Uint8Array(s.crypto_auth_hmacsha256(chainKeyInput, chainKey));
 
   return { messageKey, nextChainKey };
 }

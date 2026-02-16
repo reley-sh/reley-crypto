@@ -1,5 +1,6 @@
 import { deriveChainKey } from './hkdf.js';
 import { encrypt, decrypt } from './cipher.js';
+import { zeroize } from './utils.js';
 
 export const KEY_ROTATION_INTERVAL = 50;
 
@@ -39,6 +40,9 @@ export async function ratchetEncrypt(
   const aad = buildAAD(1, counter);
 
   const { nonce, ciphertext } = await encrypt(plaintext, messageKey, aad);
+
+  // Zeroize message key after use
+  await zeroize(messageKey);
 
   const newState: RatchetState = {
     ...state,
@@ -91,6 +95,9 @@ export async function ratchetDecrypt(
 
   const aad = buildAAD(1, counter);
   const plaintext = await decrypt(ciphertext, nonce, messageKey, aad);
+
+  // Zeroize message key after use
+  await zeroize(messageKey);
 
   const newState: RatchetState = {
     ...state,

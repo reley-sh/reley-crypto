@@ -1,6 +1,17 @@
 import { ensureSodium } from './keys.js';
 
 /**
+ * Securely zeroize a key or sensitive buffer in memory.
+ * Uses libsodium's memzero for guaranteed overwrite.
+ */
+export async function zeroize(...buffers: Uint8Array[]): Promise<void> {
+  const s = await ensureSodium();
+  for (const buf of buffers) {
+    s.memzero(buf);
+  }
+}
+
+/**
  * Compute a human-readable fingerprint from two public keys for MITM verification.
  * Keys are sorted lexicographically to ensure both parties produce the same fingerprint.
  * Uses Blake2b-128 hash, formatted as uppercase hex groups: "XXXX-XXXX-..."
