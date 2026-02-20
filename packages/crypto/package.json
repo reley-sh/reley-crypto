@@ -1,6 +1,6 @@
 {
   "name": "@reley/crypto",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "license": "MIT",
   "description": "E2E encryption primitives for Reley (X25519, HKDF, XChaCha20-Poly1305, Double Ratchet)",

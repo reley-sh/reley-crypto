@@ -14,7 +14,8 @@ export async function zeroize(...buffers: Uint8Array[]): Promise<void> {
 /**
  * Compute a human-readable fingerprint from two public keys for MITM verification.
  * Keys are sorted lexicographically to ensure both parties produce the same fingerprint.
- * Uses Blake2b-128 hash, formatted as uppercase hex groups: "XXXX-XXXX-..."
+ * Uses Blake2b-256 (32 bytes) for strong collision resistance (birthday bound 2^128).
+ * Formatted as uppercase hex groups: "XXXX-XXXX-..."
  */
 export async function computeFingerprint(
   pk1: Uint8Array,
@@ -30,7 +31,8 @@ export async function computeFingerprint(
   const combined = new Uint8Array(sorted[0].length + sorted[1].length);
   combined.set(sorted[0], 0);
   combined.set(sorted[1], sorted[0].length);
-  const hash = s.crypto_generichash(16, combined, null);
+  // Security (L-2): Blake2b-256 instead of Blake2b-128
+  const hash = s.crypto_generichash(32, combined, null);
   const hex = s.to_hex(hash).toUpperCase();
   return hex.match(/.{4}/g)!.join('-');
 }

@@ -11,7 +11,7 @@ export {
   type X25519KeyPair,
 } from './keys.js';
 
-export { computeSharedSecret } from './ecdh.js';
+export { computeSharedSecret, validateX25519PublicKey } from './ecdh.js';
 
 export { deriveSessionKeys, deriveChainKey } from './hkdf.js';
 
